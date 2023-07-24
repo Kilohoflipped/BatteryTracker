@@ -5,9 +5,9 @@
 // TITLE:  F2837xD Device Definitions.
 //
 //###########################################################################
-// $TI Release: F2837xD Support Library v210 (Patch) $
-// $Release Date: March 3 2017 $
-// $Copyright: Copyright (C) 2014-2017 Texas Instruments Incorporated -
+// $TI Release: F2837xD Support Library v210 $
+// $Release Date: Tue Nov  1 14:46:15 CDT 2016 $
+// $Copyright: Copyright (C) 2013-2016 Texas Instruments Incorporated -
 //             http://www.ti.com/ ALL RIGHTS RESERVED $
 //###########################################################################
 
@@ -43,12 +43,8 @@ extern __cregister volatile unsigned int IER;
 #define  DINT   __asm(" setc INTM")
 #define  ERTM   __asm(" clrc DBGM")
 #define  DRTM   __asm(" setc DBGM")
-#ifndef  EALLOW
 #define  EALLOW __asm(" EALLOW")
-#endif
-#ifndef  EDIS
 #define  EDIS   __asm(" EDIS")
-#endif
 #define  ESTOP0 __asm(" ESTOP0")
 
 #define M_INT1  0x0001
@@ -254,11 +250,9 @@ typedef long double     	float64;
 // The following data types are for use with byte addressable peripherals.
 // See compiler documentation on the byte_peripheral type attribute.
 //
-#ifndef __TMS320C28XX_CLA__
 #if __TI_COMPILER_VERSION__ >= 16006000
 typedef unsigned int bp_16 __attribute__((byte_peripheral));
 typedef unsigned long bp_32 __attribute__((byte_peripheral));
-#endif
 #endif
 
 //
@@ -266,6 +260,9 @@ typedef unsigned long bp_32 __attribute__((byte_peripheral));
 //
 #include "F2837xD_adc.h"
 #include "F2837xD_analogsubsys.h"
+#if __TI_COMPILER_VERSION__ >= 16006000
+#include "F2837xD_can.h"
+#endif
 #include "F2837xD_cla.h"
 #include "F2837xD_cmpss.h"
 #include "F2837xD_cputimer.h"
@@ -295,15 +292,6 @@ typedef unsigned long bp_32 __attribute__((byte_peripheral));
 #include "F2837xD_upp.h"
 #include "F2837xD_xbar.h"
 #include "F2837xD_xint.h"                // External Interrupts
-
-//
-// byte_peripheral attribute is only supported on the C28
-//
-#ifndef __TMS320C28XX_CLA__
-#if __TI_COMPILER_VERSION__ >= 16006000
-#include "F2837xD_can.h"
-#endif
-#endif
 
 #ifdef __cplusplus
 }
