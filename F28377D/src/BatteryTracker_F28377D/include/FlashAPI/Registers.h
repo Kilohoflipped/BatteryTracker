@@ -15,10 +15,10 @@
 #ifndef F021_REGISTERS_H_
 #define F021_REGISTERS_H_
 
-#include "Types.h"
+#include <Types.h>
 
 #if defined(_F2837xD)
-    #include "Registers_C28x.h"
+    #include <Registers_C28x.h>
 #elif defined(_C28X)
     #include "Registers_Concerto_C28x.h"
 #elif defined(_CONCERTO)

@@ -15,7 +15,7 @@
 #ifndef F021_REGISTERS_C28X_H_
 #define F021_REGISTERS_C28X_H_
 
-#include "Types.h"
+#include <Types.h>
 
 /*  Flash Configuration Registers */
 

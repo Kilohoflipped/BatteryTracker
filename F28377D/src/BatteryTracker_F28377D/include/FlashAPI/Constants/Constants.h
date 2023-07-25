@@ -16,9 +16,9 @@
 #if defined(_CONCERTO)
     #include "Concerto.h"
 #elif defined(_F2837xD)
-    #include "F2837xD.h"
+    #include <Constants/F2837xD.h>
 #else
-    #include "FMC.h"
+    #include <Constants/FMC.h>
 #endif
 
 

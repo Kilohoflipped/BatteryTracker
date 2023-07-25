@@ -25,6 +25,6 @@
     #define _C28X
 #endif
 
-#include "F021.h"
+#include <F021.h>
 
 #endif /*F021_F2837xD_C28X_H_*/
