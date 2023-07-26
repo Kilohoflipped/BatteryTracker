@@ -20,6 +20,7 @@ void ConfigureADC(void)
     EALLOW;
     PieVectTable.ADCA1_INT = &adc_isr; //function for ADCA interrupt 1
     EDIS;
+
     EALLOW;
     //write configurations
     AdcaRegs.ADCCTL2.bit.PRESCALE = 6; //set ADCCLK divider to /4,主频200M，AD频率最大50M
@@ -30,11 +31,13 @@ void ConfigureADC(void)
     AdcSetMode(ADC_ADCB, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
     AdcSetMode(ADC_ADCC, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
     AdcSetMode(ADC_ADCD, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
+
     //Set pulse positions to late
     AdcaRegs.ADCCTL1.bit.INTPULSEPOS = 1;
     AdcbRegs.ADCCTL1.bit.INTPULSEPOS = 1;
     AdccRegs.ADCCTL1.bit.INTPULSEPOS = 1;
     AdcdRegs.ADCCTL1.bit.INTPULSEPOS = 1;
+
     //power up the ADC
     AdcaRegs.ADCCTL1.bit.ADCPWDNZ = 1;
     AdcbRegs.ADCCTL1.bit.ADCPWDNZ = 1;
@@ -43,6 +46,7 @@ void ConfigureADC(void)
     //delay for 1ms to allow ADC time to power up
     DELAY_US(1000);
     EDIS;
+
 }
 //
 //
@@ -127,55 +131,48 @@ void ConfigureEPWM6(void)
 ****************************************************************************/
 void SetupADCEpwm(Uint16 channel)
 {
-    Uint16 acqps;
-    //
-    //determine minimum acquisition window (in SYSCLKS) based on resolution
-    //
-    if(ADC_RESOLUTION_12BIT == AdcaRegs.ADCCTL2.bit.RESOLUTION)
+    Uint16 acqps; // 采样窗口的大小
+
+    //基于采样精度计算以SYSCLKS为单位的最小采样窗口
+
+    if(ADC_RESOLUTION_12BIT == AdcaRegs.ADCCTL2.bit.RESOLUTION) //采样精度为12Bit
     {
-        acqps = 14; //75ns
+        acqps = 14; //设置采样窗口为14个SYSCLK周期，约为75ns
     }
-    else //resolution is 16-bit
+    else //采样精度为16Bit
     {
-        acqps = 63; //320ns
+        acqps = 63; //设置采样窗口为63个SYSCLK周期，约为320ns
     }
     //
-    //Select the channels to convert and end of conversion flag
-    //ADCA
-    //
+    //配置各个采样通道
     EALLOW;
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel;  //SOC0 will convert pin A0
-    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 15; //5:trigger on ePWM1 SOCA/C  0D:trigger on ePWM1 SOCA/C
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
-    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
-    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
-    //
+    //ADCA
+    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps;  //设置SOC0的采样窗口大小
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel;  //设置SOC0的输入信号通道
+    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //设置SOC0的触发源:ePWM1,SOCA
+    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;   //使能INT1中断
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //SOC0转换完成后使得INT置位
+    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //初始化：清零中断标志位
     //ADCB
-    //
-    AdcbRegs.ADCSOC0CTL.bit.CHSEL = channel;  //SOC0 will convert pin B0
-    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 15; //5:trigger on ePWM1 SOCA/C  0D:trigger on ePWM1 SOCA/C
-    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC1 will set INT1 flag
-    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
-    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
-    //
+    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps;  //设置SOC0的采样窗口大小
+    AdcbRegs.ADCSOC0CTL.bit.CHSEL = channel;  //设置SOC0的输入信号通道
+    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //设置SOC0的触发源:ePWM1,SOCA
+    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;   //使能INT1中断
+    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //SOC0转换完成后使得INT置位
+    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //初始化：清零中断标志位
     //ADCD
-    //
-    AdcdRegs.ADCSOC0CTL.bit.CHSEL = channel;  //SOC0 will convert pin B0
-    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 15; //5:trigger on ePWM1 SOCA/C  0D:trigger on ePWM1 SOCA/C
-    AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC1 will set INT1 flag
-    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
-    AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
-    //
+    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps;  //设置SOC0的采样窗口大小
+    AdcdRegs.ADCSOC0CTL.bit.CHSEL = channel;  //设置SOC0的输入信号通道
+    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //设置SOC0的触发源:ePWM1,SOCA
+    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;   //使能INT1中断
+    AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //SOC0转换完成后使得INT置位
+    AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //初始化：清零中断标志位
     //ADCC  只有C2
-    //
-    AdccRegs.ADCSOC0CTL.bit.CHSEL = 2;  //SOC0 will convert pin B0
-    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 15; //5:trigger on ePWM1 SOCA/C  0D:trigger on ePWM1 SOCA/C
-    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC1 will set INT1 flag
-    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
-    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
+    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps; //设置采样窗口大小
+    AdccRegs.ADCSOC0CTL.bit.CHSEL = 2;  //设置SOC0的输入信号通道
+    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //设置SOC0的触发源:ePWM1,SOCA
+    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1;   //使能INT1中断
+    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //SOC0转换完成后使得INT置位
+    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //初始化：清零中断标志位
     EDIS;
 }

@@ -1,0 +1,33 @@
+/*
+ *  ======= PeriEPWM ========
+ *  PeriEPWM target-side implementation
+ *
+ *  Created on: 2023Äê7ÔÂ26ÈÕ
+ *  Author:     Administrator
+ */
+#include <xdc/std.h>
+#include <xdc/runtime/Startup.h>
+
+#include "PeriEPWM.h"
+
+/* include PeriEPWM internal implementation definitions */
+#include "package/internal/PeriEPWM.xdc.h"
+
+/*
+ *  ======== PeriEPWM_Module_startup ========
+ */
+Int PeriEPWM_Module_startup(Int state)
+{
+    return (Startup_DONE);
+}
+
+#ifdef PeriEPWM_Object
+/*
+ *  ======== PeriEPWM_Instance_init ========
+ *  PeriEPWM created or constructed instance object initialization
+ */
+Void PeriEPWM_Instance_init(PeriEPWM_Object *obj, const PeriEPWM_Params *params)
+{
+    /* TODO: initialize PeriEPWM instance state fields */
+}
+#endif

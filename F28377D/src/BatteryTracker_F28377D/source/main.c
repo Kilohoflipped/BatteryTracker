@@ -19,6 +19,5 @@ int main(void)
 {
     // 初始化系统控制
     InitSysCtrl();
-
     return 0;
 }
