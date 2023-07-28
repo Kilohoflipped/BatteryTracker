@@ -261,7 +261,7 @@ typedef unsigned long bp_32 __attribute__((byte_peripheral));
 #include <F2837xD_adc.h>
 #include <F2837xD_analogsubsys.h>
 #if __TI_COMPILER_VERSION__ >= 16006000
-#include <F2837xD_can.h>
+//#include <F2837xD_can.h>
 #endif
 #include <F2837xD_cla.h>
 #include <F2837xD_cmpss.h>

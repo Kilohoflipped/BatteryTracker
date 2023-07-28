@@ -16,7 +16,7 @@
 //
 #include <F2837xD_device.h>
 #include <F2837xD_Examples.h>
-
+/*
 //
 // InitCAN - Initializes the CAN-A controller after reset.
 //
@@ -86,7 +86,7 @@ void InitCAN(void)
 //
 // End of file
 //
-
+*/
 
 
 

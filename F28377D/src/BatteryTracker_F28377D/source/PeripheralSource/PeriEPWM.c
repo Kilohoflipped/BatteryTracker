@@ -12,7 +12,7 @@ void ConfigureEPWM1(void)
 {
     InitEPwm1Gpio();        // 初始化GPIO，使用GPIO145、GPIO146。注意：28377有两个管脚可以产生pwm，此处注意配置
     EPwm1Regs.TBPRD = 1000; // 100k=100e6/（2*1000）
-    // Set Compare values
+    // 设置比较寄存器的值
     EPwm1Regs.CMPA.bit.CMPA = 1000 - 250; // 设定A通道占空比
     EPwm1Regs.TBPHS.bit.TBPHS = 0;        // 将相位寄存器清零
     EPwm1Regs.TBCTR = 0;                  // 将时间基准计数器清零
