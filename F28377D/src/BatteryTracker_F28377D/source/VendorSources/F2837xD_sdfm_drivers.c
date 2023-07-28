@@ -14,9 +14,9 @@
 //
 // Included Files
 //
+#include <F28x_Project.h>
 #include <F2837xD_sdfm_drivers.h>
 #include <F2837xD_struct.h>
-#include <F28x_Project.h>
 
 //
 // Sdfm_configureInputCtrl - This function configures SDFM Input control unit.
