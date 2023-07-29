@@ -72,7 +72,7 @@ void SetupADCChannel(Uint16 inputChannel)
     AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;          // 使能INT1中断
     AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0;        // SOC0转换完成后使得INT置位
     AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;        // 初始化：清零中断标志位
-    // ADCC  只有C2
+    // ADCC
     AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps;        // 设置采样窗口大小
     AdccRegs.ADCSOC0CTL.bit.CHSEL = inputChannel; // 设置SOC0的输入信号通道
     AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 5;          // 设置SOC0的触发源:ePWM1,SOCA
@@ -84,4 +84,5 @@ void SetupADCChannel(Uint16 inputChannel)
 
 interrupt void ADCA_INT1_ISR(void)
 {
+
 }

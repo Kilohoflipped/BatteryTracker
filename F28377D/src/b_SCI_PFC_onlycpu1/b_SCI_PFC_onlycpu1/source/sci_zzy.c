@@ -10,7 +10,7 @@
 //  scia_echoback_init - Test 1,SCIA  DLB, 8-bit word, baud rate 0x000F,
 //                       default, 1 STOP bit, no parity
 //
-void scia_init()
+void SciAConfigure()
 {
     //
     // For this example, only init the pins for the SCI-A port.

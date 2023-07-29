@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS
+CG_TOOL_ROOT := E:/Software/TI/CCS 1240/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -170,12 +170,6 @@ b_SCI_PFC_onlycpu1.out \
 EXE_OUTPUTS__QUOTED += \
 "b_SCI_PFC_onlycpu1.out" \
 
-BIN_OUTPUTS += \
-b_SCI_PFC_onlycpu1.hex \
-
-BIN_OUTPUTS__QUOTED += \
-"b_SCI_PFC_onlycpu1.hex" \
-
 
 # All Target
 all: b_SCI_PFC_onlycpu1.out
@@ -184,22 +178,14 @@ all: b_SCI_PFC_onlycpu1.out
 b_SCI_PFC_onlycpu1.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 -g --define=CPU1 --diag_warning=225 --display_error_number --diag_wrap=off -z -m"b_SCI_PFC_onlycpu1.map" --stack_size=0x600 --warn_sections -i"G:/workspace_v6_0/dtu_test-long_tmu_6.22/include" -i"E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS/lib" -i"E:/Kilo/Project/BatteryTracker/F28377D/src/b_SCI_PFC_onlycpu1/b_SCI_PFC_onlycpu1/include" -i"E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS/include" --reread_libs --display_error_number --diag_wrap=off --xml_link_info="b_SCI_PFC_onlycpu1_linkInfo.xml" --rom_model -o "b_SCI_PFC_onlycpu1.out" $(ORDERED_OBJS)
+	"E:/Software/TI/CCS 1240/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 -g --define=CPU1 --diag_warning=225 --display_error_number --diag_wrap=off -z -m"b_SCI_PFC_onlycpu1.map" --stack_size=0x600 --warn_sections -i"G:/workspace_v6_0/dtu_test-long_tmu_6.22/include" -i"E:/Software/TI/CCS 1240/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/lib" -i"E:/Kilo/Project/BatteryTracker/F28377D/src/b_SCI_PFC_onlycpu1/b_SCI_PFC_onlycpu1/include" -i"E:/Software/TI/CCS 1240/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/include" --reread_libs --display_error_number --diag_wrap=off --xml_link_info="b_SCI_PFC_onlycpu1_linkInfo.xml" --rom_model -o "b_SCI_PFC_onlycpu1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
-	@echo ' '
-	@$(MAKE) --no-print-directory post-build
-
-b_SCI_PFC_onlycpu1.hex: $(EXE_OUTPUTS)
-	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
-	@echo 'Invoking: C2000 Hex Utility'
-	"E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS/bin/hex2000"  -o "b_SCI_PFC_onlycpu1.hex" $(EXE_OUTPUTS__QUOTED)
-	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
+	-$(RM) $(EXE_OUTPUTS__QUOTED)
 	-$(RM) "source\DCL_PI_C1.obj" "source\F2837xD_Adc.obj" "source\F2837xD_CodeStartBranch.obj" "source\F2837xD_CpuTimers.obj" "source\F2837xD_DBGIER.obj" "source\F2837xD_DefaultISR.obj" "source\F2837xD_Dma.obj" "source\F2837xD_ECap.obj" "source\F2837xD_EPwm.obj" "source\F2837xD_EQep.obj" "source\F2837xD_Emif.obj" "source\F2837xD_GlobalVariableDefs.obj" "source\F2837xD_Gpio.obj" "source\F2837xD_I2C.obj" "source\F2837xD_Ipc.obj" "source\F2837xD_Ipc_Driver.obj" "source\F2837xD_Ipc_Driver_Lite.obj" "source\F2837xD_Ipc_Driver_Util.obj" "source\F2837xD_Mcbsp.obj" "source\F2837xD_PieCtrl.obj" "source\F2837xD_PieVect.obj" "source\F2837xD_Sci.obj" "source\F2837xD_Spi.obj" "source\F2837xD_SysCtrl.obj" "source\F2837xD_TempSensorConv.obj" "source\F2837xD_Upp.obj" "source\F2837xD_can.obj" "source\F2837xD_sci_io.obj" "source\F2837xD_sdfm_drivers.obj" "source\F2837xD_struct.obj" "source\F2837xD_usDelay.obj" "source\epwm_adc_Init_zzy.obj" "source\gpio_exinterrupt_Init_zzy.obj" "source\main.obj" "source\sci_zzy.obj" 
 	-$(RM) "source\F2837xD_Adc.d" "source\F2837xD_CpuTimers.d" "source\F2837xD_DefaultISR.d" "source\F2837xD_Dma.d" "source\F2837xD_ECap.d" "source\F2837xD_EPwm.d" "source\F2837xD_EQep.d" "source\F2837xD_Emif.d" "source\F2837xD_GlobalVariableDefs.d" "source\F2837xD_Gpio.d" "source\F2837xD_I2C.d" "source\F2837xD_Ipc.d" "source\F2837xD_Ipc_Driver.d" "source\F2837xD_Ipc_Driver_Lite.d" "source\F2837xD_Ipc_Driver_Util.d" "source\F2837xD_Mcbsp.d" "source\F2837xD_PieCtrl.d" "source\F2837xD_PieVect.d" "source\F2837xD_Sci.d" "source\F2837xD_Spi.d" "source\F2837xD_SysCtrl.d" "source\F2837xD_TempSensorConv.d" "source\F2837xD_Upp.d" "source\F2837xD_can.d" "source\F2837xD_sci_io.d" "source\F2837xD_sdfm_drivers.d" "source\F2837xD_struct.d" "source\epwm_adc_Init_zzy.d" "source\gpio_exinterrupt_Init_zzy.d" "source\main.d" "source\sci_zzy.d" 
 	-$(RM) "source\DCL_PI_C1.d" "source\F2837xD_CodeStartBranch.d" "source\F2837xD_DBGIER.d" "source\F2837xD_usDelay.d" 
@@ -207,7 +193,7 @@ clean:
 	-@echo ' '
 
 post-build:
-	-"E:/Software/TI/CCS920/ccs/tools/compiler/ti-cgt-c2000_18.12.3.LTS/bin/hex2000" -i "b_SCI_PFC_onlycpu1.out" -o "b_SCI_PFC_onlycpu1.hex" -order MS -romwidth 16
+	-"E:/Software/TI/CCS 1240/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/bin/hex2000" -i "b_SCI_PFC_onlycpu1.out" -o "b_SCI_PFC_onlycpu1.hex" -order MS -romwidth 16
 	-@echo ' '
 
 .PHONY: all clean dependents

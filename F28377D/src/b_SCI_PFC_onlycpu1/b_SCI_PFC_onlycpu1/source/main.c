@@ -102,7 +102,7 @@ void main(void)
     InitPieVectTable();
     //添加代码----------------------------------------------------
     scia_fifo_init();       // Initialize the SCI FIFO
-    scia_init();   // Initialize SCI for echoback
+    SciAConfigure();   // Initialize SCI for echoback
     ConfigureADC();        //开环
     ConfigureEPWM1();       //Configure the ePWM,AD采样
     ConfigureEPWM6();       //驱动boost
