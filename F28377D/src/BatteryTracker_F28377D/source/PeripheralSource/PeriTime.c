@@ -6,7 +6,7 @@
  */
 
 #include "F28x_Project.h"
-#include "PeriTime.h"
+#include "PeriDevices.h"
 
 Uint32 LSPCLKCal()
 {

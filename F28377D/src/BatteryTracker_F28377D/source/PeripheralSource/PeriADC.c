@@ -5,7 +5,7 @@
  *      Author: Administrator
  */
 #include "F28x_Project.h"
-#include "PeriADC.h"
+#include "PeriDevices.h"
 
 void ConfigureADC(void)
 {
@@ -52,37 +52,47 @@ void SetupADCChannel(Uint16 inputChannel)
     // 配置各个采样通道
     EALLOW;
     // ADCA
-    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps;        // 设置SOC0的采样窗口大小
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = inputChannel; // 设置SOC0的输入信号通道
-    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5;          // 设置SOC0的触发源:ePWM1,SOCA
-    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;          // 使能INT1中断
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0;        // SOC0转换完成后使得INT置位
-    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;        // 初始化：清零中断标志位
+    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置SOC0的采样窗口大小
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = inputChannel;   // 设置SOC0的输入信号通道
+    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
+    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
     // ADCB
-    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps;        // 设置SOC0的采样窗口大小
-    AdcbRegs.ADCSOC0CTL.bit.CHSEL = inputChannel; // 设置SOC0的输入信号通道
-    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 5;          // 设置SOC0的触发源:ePWM1,SOCA
-    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;          // 使能INT1中断
-    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;        // SOC0转换完成后使得INT置位
-    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;        // 初始化：清零中断标志位
-    // ADCD
-    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps;        // 设置SOC0的采样窗口大小
-    AdcdRegs.ADCSOC0CTL.bit.CHSEL = inputChannel; // 设置SOC0的输入信号通道
-    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 5;          // 设置SOC0的触发源:ePWM1,SOCA
-    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;          // 使能INT1中断
-    AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0;        // SOC0转换完成后使得INT置位
-    AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;        // 初始化：清零中断标志位
+    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置SOC0的采样窗口大小
+    AdcbRegs.ADCSOC0CTL.bit.CHSEL = inputChannel;   // 设置SOC0的输入信号通道
+    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 0;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
+    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
+    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+    AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
     // ADCC
-    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps;        // 设置采样窗口大小
-    AdccRegs.ADCSOC0CTL.bit.CHSEL = inputChannel; // 设置SOC0的输入信号通道
-    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 5;          // 设置SOC0的触发源:ePWM1,SOCA
-    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1;          // 使能INT1中断
-    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0;        // SOC0转换完成后使得INT置位
-    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;        // 初始化：清零中断标志位
+    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置采样窗口大小
+    AdccRegs.ADCSOC0CTL.bit.CHSEL = inputChannel;   // 设置SOC0的输入信号通道
+    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 0;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
+    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
+    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+    AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
+    // ADCD
+    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置SOC0的采样窗口大小
+    AdcdRegs.ADCSOC0CTL.bit.CHSEL = inputChannel;   // 设置SOC0的输入信号通道
+    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 0;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
+    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
+    AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+    AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
     EDIS;
 }
 
 interrupt void ADCA_INT1_ISR(void)
 {
-
+    char ADCLowChar[] = "00000";
+    char ADCHighChar[] = "00000";
+    ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 转换结果
+    ADCReLow8 = ADCResult0 & 0xFF                   // 获取低八位
+    ADCReHigh8 = (ADCResult0>>8) & 0xFF             // 获取高八位(取决于转换模式)
+    Int2Str(ADCReLow8,ADCLowChar);                  // 低八位数字转化为字符串
+    Int2Str(ADCReHigh8,ADCHighChar);                // 高八位数字转化为字符串
+    SCIAXmit('!');
+    SCIAMsg(ADCReLow8);
+    SCIAMsg(ADCReHigh8);
+    SCIAXmit('\n');
 }

@@ -8,7 +8,7 @@
 #ifndef INCLUDE_KILOLIB_H_
 #define INCLUDE_KILOLIB_H_
 
-
+void Int2Str(Uint16 IntNum,char* CharNum);
 
 
 #endif /* INCLUDE_KILOLIB_H_ */

@@ -6,7 +6,7 @@
  */
 
 #include "F28x_Project.h"
-#include "PeriEPWM.h"
+#include "PeriDevices.h"
 #include <math.h>
 
 void ConfigureEPWM1(void)

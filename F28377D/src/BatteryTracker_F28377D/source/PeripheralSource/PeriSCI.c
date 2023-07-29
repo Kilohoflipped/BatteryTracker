@@ -6,7 +6,7 @@
  */
 
 #include "F28x_Project.h"
-#include "PeriSCI.h"
+#include "PeriDevices.h"
 #include "KiloLib.h"
 
 void SciAConfigure()
@@ -53,6 +53,25 @@ void SciAConfigure()
     SciaRegs.SCICTL1.bit.SWRESET = 1;                   // 软件复位，更新状态
 }
 
+void SCIAFIFOSetup()
+{
+    SciaRegs.SCIFFTX.all = 0xE040;
+    SciaRegs.SCIFFTX.bit.TXFFIENA = 0;                  // 是否使能FF发送中断
+    SciaRegs.SCIFFTX.bit.TXFFIL = 0;                    // 设置FFTX中断级别
+    SciaRegs.SCIFFTX.bit.TXFFINTCLR = 1;                // 清除TXFFINT中断标志位
+    SciaRegs.SCIFFTX.bit.TXFIFORESET = 1;               // 复位FIFO发送功能
+    SciaRegs.SCIFFTX.bit.SCIFFENA = 1;                  // 使能SCIFIFO功能
+    SciaRegs.SCIFFTX.bit.SCIRST = 1;                    // 复位SCI的发送和接收通道
+
+    SciaRegs.SCIFFRX.all = 0x2044;
+    SciaRegs.SCIFFRX.bit.RXFFIENA = 0                   // 是否使能FF接收中断
+    SciaRegs.SCIFFRX.bit.RXFFIL = 4;                    // 设置FFRX中断级别
+    SciaRegs.SCIFFRX.bit.RXFFINTCLR = 1;                // 清除RXFFINT中断标志位
+    SciaRegs.SCIFFRX.bit.RXFIFORESET = 1;               // 复位FIFO接收功能
+
+    SciaRegs.SCIFFCT.all = 0x0000;                      // 禁用自动波特率和延迟
+}
+
 void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
 {
 
@@ -89,5 +108,23 @@ void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
         BaudInf[1] = 255;                                               // 高八位
         BaudInf[2] = 255;                                               // 低八位
         BaudInf[4] = 1;                                                 // 范围异常正常
+    }
+}
+
+// 通过SCI-A模块发送一个字符(8位)
+void SCIAXmit(int data)
+{
+    while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}                         //等待上一个数据
+    SciaRegs.SCITXBUF.all =data;
+}
+// 通过SCI-A模块发送一条消息(char数组)
+void SCIAMsg(char* msg)
+{
+    int i;
+    i = 0;
+    while(msg[i] != '\0')
+    {
+        SCIAXmit(msg[i]);
+        i++;
     }
 }
