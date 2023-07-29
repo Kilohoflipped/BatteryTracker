@@ -8,10 +8,11 @@
 #include "F28x_Project.h"
 #include "PeriDevices.h"
 #include "KiloLib.h"
+#include <math.h>
 
-void SciAConfigure()
+void ConfigureSciA()
 {
-    Uint32 BaudInf[5] = {0,0,0,0,0}                     // 用于计算波特率信息,0:输出波特率,1:HBAUD,2:LBAUD,3:误差率,4:波特率是否过高
+    Uint32 BaudInf[5] = {0,0,0,0,0};                    // 用于计算波特率信息,0:输出波特率,1:HBAUD,2:LBAUD,3:误差率,4:波特率是否过高
 
     // 在这段代码中，只有SCI-A模块的引脚被初始化了
     // GPIO_SetupPinMux() - Sets the GPxMUX1/2 and GPyMUX1/2 register bits
@@ -45,8 +46,8 @@ void SciAConfigure()
     // @LSPCLK = 50 MHz (200 MHz SYSCLK)
     // HBAUD = 0x02 and LBAUD = 0x8B.
     BaudCalculate(9600,BaudInf);
-    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[1]             // 波特率选择器高八位
-    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[2]             // 波特率选择器低八位
+    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[1];            // 波特率选择器高八位
+    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[2];            // 波特率选择器低八位
     //SciaRegs.SCIHBAUD.all = 0x0002;
     //SciaRegs.SCILBAUD.all = 0x008B;
     SciaRegs.SCICTL1.all = 0x0023;                      // 从复位状态释放，使其工作于正常工作状态
@@ -64,7 +65,7 @@ void SCIAFIFOSetup()
     SciaRegs.SCIFFTX.bit.SCIRST = 1;                    // 复位SCI的发送和接收通道
 
     SciaRegs.SCIFFRX.all = 0x2044;
-    SciaRegs.SCIFFRX.bit.RXFFIENA = 0                   // 是否使能FF接收中断
+    SciaRegs.SCIFFRX.bit.RXFFIENA = 0;                  // 是否使能FF接收中断
     SciaRegs.SCIFFRX.bit.RXFFIL = 4;                    // 设置FFRX中断级别
     SciaRegs.SCIFFRX.bit.RXFFINTCLR = 1;                // 清除RXFFINT中断标志位
     SciaRegs.SCIFFRX.bit.RXFIFORESET = 1;               // 复位FIFO接收功能
@@ -75,6 +76,7 @@ void SCIAFIFOSetup()
 void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
 {
 
+    extern Uint32 LSPCLKFreq;
     float64 BRR = (LSPCLKFreq/8/desiredBaudRate)-1;                     // 根据公式计算波特率选择寄存器取值
     Uint32 roundBRR = (Uint32)round(BRR);                               // 进行四舍五入
     float64 calBaud1 = LSPCLKFreq / ((roundBRR+1)*8);                   // 根据计算出的整数BRR计算输出波特率值1
@@ -84,12 +86,12 @@ void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
     if (fabs(calBaud1-desiredBaudRate)>=fabs(calBaud2-desiredBaudRate)) // 比较哪个输出波特率和目标波特率更接近
     {
         BaudInf[0] = (Uint32)calBaud2;                                  // 波特率2较接近则选波特率2
-        BaudInf[3] = fabs(calBaud2-desiredBaudRate)/desiredBaudRate     // 计算误差率
+        BaudInf[3] = fabs(calBaud2-desiredBaudRate)/desiredBaudRate;    // 计算误差率
         finalBRR = 0;
     }else
     {
         BaudInf[0] = (Uint32)calBaud1;                                  // 否则选波特率1
-        BaudInf[3] = fabs(calBaud1-desiredBaudRate)/desiredBaudRate     // 计算误差率
+        BaudInf[3] = fabs(calBaud1-desiredBaudRate)/desiredBaudRate;    // 计算误差率
         finalBRR = roundBRR;
     }
 

@@ -6,6 +6,7 @@
  */
 #include "F28x_Project.h"
 #include "PeriDevices.h"
+#include "KiloLib.h"
 
 void ConfigureADC(void)
 {
@@ -86,13 +87,13 @@ interrupt void ADCA_INT1_ISR(void)
 {
     char ADCLowChar[] = "00000";
     char ADCHighChar[] = "00000";
-    ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 转换结果
-    ADCReLow8 = ADCResult0 & 0xFF                   // 获取低八位
-    ADCReHigh8 = (ADCResult0>>8) & 0xFF             // 获取高八位(取决于转换模式)
+    Uint32 ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 转换结果
+    Uint32 ADCReLow8 = ADCResult0 & 0xFF;                  // 获取低八位
+    Uint32 ADCReHigh8 = (ADCResult0>>8) & 0xFF;            // 获取高八位(取决于转换模式)
     Int2Str(ADCReLow8,ADCLowChar);                  // 低八位数字转化为字符串
     Int2Str(ADCReHigh8,ADCHighChar);                // 高八位数字转化为字符串
     SCIAXmit('!');
-    SCIAMsg(ADCReLow8);
-    SCIAMsg(ADCReHigh8);
+    SCIAMsg(ADCLowChar);
+    SCIAMsg(ADCHighChar);
     SCIAXmit('\n');
 }

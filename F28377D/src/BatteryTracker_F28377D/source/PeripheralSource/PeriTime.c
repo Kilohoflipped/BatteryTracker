@@ -8,6 +8,8 @@
 #include "F28x_Project.h"
 #include "PeriDevices.h"
 
+Uint32 LSPCLKFreq;
+
 Uint32 LSPCLKCal()
 {
     Uint32 LSPCLKFreq = 0;

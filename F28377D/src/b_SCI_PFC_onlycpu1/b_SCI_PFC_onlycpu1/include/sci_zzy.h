@@ -12,7 +12,7 @@
 //
 // Function Prototypes
 //
-extern void SciAConfigure(void);
+extern void ConfigureSciA(void);
 extern void scia_fifo_init(void);
 extern void scia_xmit(int a);
 extern void scia_msg(char *msg);

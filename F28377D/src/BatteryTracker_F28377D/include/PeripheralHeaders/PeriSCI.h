@@ -8,7 +8,7 @@
 #ifndef INCLUDE_PERIPHERALHEADERS_PERISCI_H_
 #define INCLUDE_PERIPHERALHEADERS_PERISCI_H_
 
-void SciAConfigure();
+void ConfigureSciA();
 void SCIAFIFOSetup();
 void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf);
 void SCIAXmit(int data);

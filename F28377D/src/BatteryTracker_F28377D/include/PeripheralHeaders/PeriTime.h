@@ -22,6 +22,6 @@
 #define LSPCLKDIVNUM_7 14
 
 Uint32 LSPCLKCal();
-Uint32 LSPCLKFreq;
+extern Uint32 LSPCLKFreq;
 
 #endif /* INCLUDE_PERIPHERALHEADERS_PERITIME_H_ */
