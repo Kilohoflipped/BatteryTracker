@@ -9,10 +9,11 @@ classdef DSP2PCConnector < handle
         serverIP
         serverPort
         serverSocket
+        dataMutex
     end
 
     methods
-        function obj = DSP2PCConnector(serverIP, serverPort, dataProcessQueue)
+        function obj = DSP2PCConnector(serverIP, serverPort, dataProcessQueue,dataMutex)
             % 构造函数，初始化服务器IP，端口，和一个处理数据的队列
             obj.timeOut = 10;
             obj.dataProcessQueue = dataProcessQueue;
@@ -21,32 +22,38 @@ classdef DSP2PCConnector < handle
             obj.connectionStatus = false;
             obj.serverIP = serverIP;
             obj.serverPort = serverPort;
-            obj.serverSocket = tcpserver(serverIP, serverPort, 'NetworkRole', 'server');
+            obj.serverSocket = tcpserver(serverIP, str2double(serverPort), "Timeout", 10);
+            obj.serverSocket.ConnectionChangedFcn = @handleClient;
+            configureTerminator(obj.serverSocket,238)
+            obj.dataMutex = dataMutex;
         end
         function startServer(obj)
             % 启动服务器并开始监听
-            fopen(obj.serverSocket);
             fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
-            obj.checkConnection();
-        end
-        function checkConnection(obj)
-            % 检查客户端连接状态
-            if ~obj.connectionStatus
-                try
-                    fopen(obj.clientSocket); % 尝试打开连接
-                    fprintf('Connection from %s', obj.clientAddress);
-                    obj.connectionStatus = true;
-                    obj.handleClient();
-                catch
-                    % 如果发生错误，忽略并继续检查连接
-                end
+            if ~obj.serverSocket.Connected
+                fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
+                fopen(obj.serverSocket);
+                fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
+                obj.checkConnection();
             end
-            pause(1); % 等待一秒再次检查
-            obj.checkConnection(); % 递归调用自己，保持检查连接
         end
+        %function checkConnection(obj)
+            % 检查客户端连接状态
+        %    if ~obj.connectionStatus
+        %        fopen(obj.clientSocket); % 尝试打开连接
+        %        fprintf('Connection from %s', obj.clientAddress);
+        %        obj.connectionStatus = true;
+        %        obj.handleClient();
+        %    end
+        %    pause(1); % 等待一秒再次检查
+        %    obj.checkConnection(); % 递归调用自己，保持检查连接
+        %end
         function handleClient(obj)
             % 处理客户端发送的数据
-            while obj.connectionStatus
+            if obj.serverSocket.Connected
+                fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
+            end
+            while obj.serverSocket.Connected
                 buffer = java.util.LinkedList;
                 while obj.clientSocket.BytesAvailable
                     data = fread(obj.clientSocket, obj.clientSocket.BytesAvailable);
