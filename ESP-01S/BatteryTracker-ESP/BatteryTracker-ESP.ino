@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>  // 引入ESP8266WiFi库
 
-int location = 3;  // 当前所处位置
+int location = 1;  // 当前所处位置
 const char* ssid = "ChinaNet-chaoke1209";        // WIFI名称
 const char* password = "chaokehotel";    // WIFI密码
 const char* serverIP = "192.168.1.11";    // 服务器(PC)IP地址

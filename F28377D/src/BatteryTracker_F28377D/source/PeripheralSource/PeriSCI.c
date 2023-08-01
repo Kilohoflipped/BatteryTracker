@@ -18,10 +18,10 @@ void ConfigureSciA()
     // GPIO_SetupPinMux() - Sets the GPxMUX1/2 and GPyMUX1/2 register bits
     // GPIO_SetupPinOptions() - Sets the direction and configuration of the GPIOS
 
-    GPIO_SetupPinMux(28, GPIO_MUX_CPU1, 1);             // 初始化28脚的功能为SCI-A模块RX接收引脚
-    GPIO_SetupPinOptions(28, GPIO_INPUT, GPIO_PUSHPULL);
-    GPIO_SetupPinMux(29, GPIO_MUX_CPU1, 1);             // 初始化29脚的功能为SCI-A模块TX发送引脚
-    GPIO_SetupPinOptions(29, GPIO_OUTPUT, GPIO_ASYNC);
+    GPIO_SetupPinMux(64, GPIO_MUX_CPU1, 6);             // 初始化64脚的功能为SCI-A模块RX接收引脚
+    GPIO_SetupPinOptions(64, GPIO_INPUT, GPIO_PUSHPULL);
+    GPIO_SetupPinMux(65, GPIO_MUX_CPU1, 6);             // 初始化65脚的功能为SCI-A模块TX发送引脚
+    GPIO_SetupPinOptions(65, GPIO_OUTPUT, GPIO_ASYNC);
 
     // 注意: 在InitSysCtrl()函数中，SCI-A模块的时钟已经被打开
     SciaRegs.SCICCR.all = 0x0007;
@@ -46,29 +46,29 @@ void ConfigureSciA()
     // @LSPCLK = 50 MHz (200 MHz SYSCLK)
     // HBAUD = 0x02 and LBAUD = 0x8B.
     BaudCalculate(9600,BaudInf);
-    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[1];            // 波特率选择器高八位
-    SciaRegs.SCIHBAUD.bit.BAUD = BaudInf[2];            // 波特率选择器低八位
-    //SciaRegs.SCIHBAUD.all = 0x0002;
-    //SciaRegs.SCILBAUD.all = 0x008B;
+    SciaRegs.SCIHBAUD.bit.BAUD = (int)BaudInf[1];            // 波特率选择器高八位
+    SciaRegs.SCILBAUD.bit.BAUD = (int)BaudInf[2];            // 波特率选择器低八位
+    SciaRegs.SCIHBAUD.all = 0x0002;
+    SciaRegs.SCILBAUD.all = 0x008B;
     SciaRegs.SCICTL1.all = 0x0023;                      // 从复位状态释放，使其工作于正常工作状态
     SciaRegs.SCICTL1.bit.SWRESET = 1;                   // 软件复位，更新状态
 }
 
 void SCIAFIFOSetup()
 {
-    SciaRegs.SCIFFTX.all = 0xE040;
     SciaRegs.SCIFFTX.bit.TXFFIENA = 0;                  // 是否使能FF发送中断
     SciaRegs.SCIFFTX.bit.TXFFIL = 0;                    // 设置FFTX中断级别
     SciaRegs.SCIFFTX.bit.TXFFINTCLR = 1;                // 清除TXFFINT中断标志位
     SciaRegs.SCIFFTX.bit.TXFIFORESET = 1;               // 复位FIFO发送功能
     SciaRegs.SCIFFTX.bit.SCIFFENA = 1;                  // 使能SCIFIFO功能
     SciaRegs.SCIFFTX.bit.SCIRST = 1;                    // 复位SCI的发送和接收通道
+    SciaRegs.SCIFFTX.all = 0xE040;
 
-    SciaRegs.SCIFFRX.all = 0x2044;
     SciaRegs.SCIFFRX.bit.RXFFIENA = 0;                  // 是否使能FF接收中断
     SciaRegs.SCIFFRX.bit.RXFFIL = 4;                    // 设置FFRX中断级别
     SciaRegs.SCIFFRX.bit.RXFFINTCLR = 1;                // 清除RXFFINT中断标志位
     SciaRegs.SCIFFRX.bit.RXFIFORESET = 1;               // 复位FIFO接收功能
+    SciaRegs.SCIFFRX.all = 0x2044;
 
     SciaRegs.SCIFFCT.all = 0x0000;                      // 禁用自动波特率和延迟
 }
@@ -85,12 +85,12 @@ void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
 
     if (fabs(calBaud1-desiredBaudRate)>=fabs(calBaud2-desiredBaudRate)) // 比较哪个输出波特率和目标波特率更接近
     {
-        BaudInf[0] = (Uint32)calBaud2;                                  // 波特率2较接近则选波特率2
+        BaudInf[0] = (Uint32)round(calBaud2);                                  // 波特率2较接近则选波特率2
         BaudInf[3] = fabs(calBaud2-desiredBaudRate)/desiredBaudRate;    // 计算误差率
         finalBRR = 0;
     }else
     {
-        BaudInf[0] = (Uint32)calBaud1;                                  // 否则选波特率1
+        BaudInf[0] = (Uint32)round(calBaud1);                                  // 否则选波特率1
         BaudInf[3] = fabs(calBaud1-desiredBaudRate)/desiredBaudRate;    // 计算误差率
         finalBRR = roundBRR;
     }

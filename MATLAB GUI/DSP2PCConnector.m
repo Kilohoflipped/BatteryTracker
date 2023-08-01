@@ -22,20 +22,24 @@ classdef DSP2PCConnector < handle
             obj.connectionStatus = false;
             obj.serverIP = serverIP;
             obj.serverPort = serverPort;
-            obj.serverSocket = tcpserver(serverIP, str2double(serverPort), "Timeout", 10);
-            obj.serverSocket.ConnectionChangedFcn = @handleClient;
+            obj.serverSocket = tcpserver(serverIP, str2double(serverPort));
+            obj.serverSocket.ConnectionChangedFcn = @startServer;
             configureTerminator(obj.serverSocket,238)
+            configureCallback(obj.serverSocket,"byte",4*1000,@handleClient)
             obj.dataMutex = dataMutex;
         end
         function startServer(obj)
             % 启动服务器并开始监听
             fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
-            if ~obj.serverSocket.Connected
+            if  obj.serverSocket.Connected
                 fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
-                fopen(obj.serverSocket);
-                fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
-                obj.checkConnection();
             end
+            %if ~obj.serverSocket.Connected
+            %    fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
+            %    fopen(obj.serverSocket);
+            %    fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
+            %    obj.checkConnection();
+            %end
         end
         %function checkConnection(obj)
             % 检查客户端连接状态
@@ -50,6 +54,7 @@ classdef DSP2PCConnector < handle
         %end
         function handleClient(obj)
             % 处理客户端发送的数据
+            1;
             if obj.serverSocket.Connected
                 fprintf('Server is listening on %s:%d', obj.serverIP, obj.serverPort);
             end
