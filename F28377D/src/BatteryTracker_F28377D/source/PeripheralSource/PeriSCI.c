@@ -10,7 +10,7 @@
 #include "KiloLib.h"
 #include <math.h>
 
-void ConfigureSciA()
+void ConfigureSciA(void)
 {
     Uint32 BaudInf[5] = {0,0,0,0,0};                    // 用于计算波特率信息,0:输出波特率,1:HBAUD,2:LBAUD,3:误差率,4:波特率是否过高
 
@@ -24,19 +24,19 @@ void ConfigureSciA()
     GPIO_SetupPinOptions(65, GPIO_OUTPUT, GPIO_ASYNC);
 
     // 注意: 在InitSysCtrl()函数中，SCI-A模块的时钟已经被打开
-    SciaRegs.SCICCR.all = 0x0007;
     SciaRegs.SCICCR.bit.SCICHAR = 7;                    // 通信消息字符长度为8Bit
     SciaRegs.SCICCR.bit.ADDRIDLE_MODE = 0;              // 选择空闲线模式协议
     SciaRegs.SCICCR.bit.LOOPBKENA = 0;                  // 是否使能禁用环回测试模式，RX引脚和TX引脚不内部连接
     SciaRegs.SCICCR.bit.PARITY = 0;                     // 0:使用奇校验 1:使用偶校验
     SciaRegs.SCICCR.bit.PARITYENA = 0;                  // 是否使用奇偶校验
     SciaRegs.SCICCR.bit.STOPBITS = 0;                   // 0:一个停止位 1:两个停止位
+    SciaRegs.SCICCR.all = 0x0007;
 
-    SciaRegs.SCICTL1.all = 0x0003;
     SciaRegs.SCICTL1.bit.RXENA = 1;                     // 是否使能SCI-A模块RX接收功能
     SciaRegs.SCICTL1.bit.TXENA = 1;                     // 是否使能SCI-A模块TX发送功能
     SciaRegs.SCICTL1.bit.SLEEP = 0;                     // 是否使能SCI-A模块休眠模式
     SciaRegs.SCICTL1.bit.TXWAKE = 0;                    // SCI发送器唤醒方式选择，是否启用数字唤醒功能
+    SciaRegs.SCICTL1.all = 0x0003;
 
     SciaRegs.SCICTL2.all = 0x0003;
     SciaRegs.SCICTL2.bit.TXINTENA = 1;                  // 是否使能发送就绪中断
@@ -48,13 +48,14 @@ void ConfigureSciA()
     BaudCalculate(9600,BaudInf);
     SciaRegs.SCIHBAUD.bit.BAUD = (int)BaudInf[1];            // 波特率选择器高八位
     SciaRegs.SCILBAUD.bit.BAUD = (int)BaudInf[2];            // 波特率选择器低八位
-    SciaRegs.SCIHBAUD.all = 0x0002;
-    SciaRegs.SCILBAUD.all = 0x008B;
-    SciaRegs.SCICTL1.all = 0x0023;                      // 从复位状态释放，使其工作于正常工作状态
+    //SciaRegs.SCIHBAUD.all = 0x0002;
+    //SciaRegs.SCILBAUD.all = 0x008B;
     SciaRegs.SCICTL1.bit.SWRESET = 1;                   // 软件复位，更新状态
+    SciaRegs.SCICTL1.all = 0x0023;                      // 从复位状态释放，使其工作于正常工作状态
+
 }
 
-void SCIAFIFOSetup()
+void ConfigureSciaFifo(void)
 {
     SciaRegs.SCIFFTX.bit.TXFFIENA = 0;                  // 是否使能FF发送中断
     SciaRegs.SCIFFTX.bit.TXFFIL = 0;                    // 设置FFTX中断级别
@@ -114,19 +115,19 @@ void BaudCalculate(Uint32 desiredBaudRate,Uint32* BaudInf)
 }
 
 // 通过SCI-A模块发送一个字符(8位)
-void SCIAXmit(int data)
+void SciaXmit(int data)
 {
     while (SciaRegs.SCIFFTX.bit.TXFFST != 0) {}                         //等待上一个数据
     SciaRegs.SCITXBUF.all =data;
 }
 // 通过SCI-A模块发送一条消息(char数组)
-void SCIAMsg(char* msg)
+void SciaMsg(char * msg)
 {
     int i;
     i = 0;
     while(msg[i] != '\0')
     {
-        SCIAXmit(msg[i]);
+        SciaXmit(msg[i]);
         i++;
     }
 }

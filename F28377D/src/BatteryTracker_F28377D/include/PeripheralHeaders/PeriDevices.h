@@ -12,5 +12,6 @@
 #include "PeriEPWM.h"
 #include "PeriSCI.h"
 #include "PeriTime.h"
+#include "PeriGpio.h"
 
 #endif /* INCLUDE_PERIPHERALHEADERS_PERIDEVICES_H_ */

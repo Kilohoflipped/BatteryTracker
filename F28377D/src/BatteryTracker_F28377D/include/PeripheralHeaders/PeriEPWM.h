@@ -9,5 +9,6 @@
 #define INCLUDE_PERIPHERALHEADERS_PERIEPWM_H_
 
 void ConfigureEPWM1(void);
+void ConfigureEPWM2(void);
 
 #endif /* INCLUDE_PERIPHERALHEADERS_PERIEPWM_H_ */

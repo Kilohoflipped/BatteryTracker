@@ -287,9 +287,7 @@ void DisableDog(void)
 
 void InitSysPll(Uint16 clock_source, Uint16 imult, Uint16 fmult, Uint16 divsel)
 {
-    Uint16 clksrc = 1;
-    Uint32 temp_syspllmult = ClkCfgRegs.SYSPLLMULT.all;
-    clock_source = clksrc;
+    //Uint32 temp_syspllmult = ClkCfgRegs.SYSPLLMULT.all;
     if((clock_source == ClkCfgRegs.CLKSRCCTL1.bit.OSCCLKSRCSEL)    &&
             (imult         == ClkCfgRegs.SYSPLLMULT.bit.IMULT)           &&
             (fmult         == ClkCfgRegs.SYSPLLMULT.bit.FMULT)           &&
@@ -298,8 +296,7 @@ void InitSysPll(Uint16 clock_source, Uint16 imult, Uint16 fmult, Uint16 divsel)
         //everything is set as required, so just return
         return;
     }
-    SysXtalOscSel();
-    /*if(clock_source != ClkCfgRegs.CLKSRCCTL1.bit.OSCCLKSRCSEL)
+    if(clock_source != ClkCfgRegs.CLKSRCCTL1.bit.OSCCLKSRCSEL)
     {
         switch (clock_source)
         {
@@ -313,36 +310,35 @@ void InitSysPll(Uint16 clock_source, Uint16 imult, Uint16 fmult, Uint16 divsel)
             SysXtalOscSel();
             break;
         }
-    }*/
+    }
     // first modify the PLL multipliers
-    if(1/*imult != ClkCfgRegs.SYSPLLMULT.bit.IMULT || fmult != ClkCfgRegs.SYSPLLMULT.bit.FMULT*/)
+    if(imult != ClkCfgRegs.SYSPLLMULT.bit.IMULT || fmult != ClkCfgRegs.SYSPLLMULT.bit.FMULT)
     {
         EALLOW;
         // Bypass PLL and set dividers to /1
         ClkCfgRegs.SYSPLLCTL1.bit.PLLCLKEN = 0;
         ClkCfgRegs.SYSCLKDIVSEL.bit.PLLSYSCLKDIV = 0;
         // Program PLL multipliers
-        ClkCfgRegs.SYSPLLMULT.bit.IMULT = 20; //imult
-        //ClkCfgRegs.SYSPLLMULT.bit.IMULT = 0x14; //imult
-        ClkCfgRegs.SYSPLLMULT.bit.FMULT = 0;  //fmult
+        ClkCfgRegs.SYSPLLMULT.bit.IMULT = imult; //imult
+        ClkCfgRegs.SYSPLLMULT.bit.FMULT = fmult; //fmult
         /*ClkCfgRegs.SYSPLLMULT.all = ((temp_syspllmult & ~(0x37FU)) |
                                      ((fmult << 8U) | imult));*/
         ClkCfgRegs.SYSPLLCTL1.bit.PLLEN = 1;            // Enable SYSPLL
         // Wait for the SYSPLL lock
-        //while(ClkCfgRegs.SYSPLLSTS.bit.LOCKS != 1)
-        //{
+        while(ClkCfgRegs.SYSPLLSTS.bit.LOCKS != 1)
+        {
             // Uncomment to service the watchdog
             // ServiceDog();
-        //}
+        }
         // Write a multiplier again to ensure proper PLL initialization
         // This will force the PLL to lock a second time
         ClkCfgRegs.SYSPLLMULT.bit.IMULT = imult;        // Setting integer multiplier
         // Wait for the SYSPLL re-lock
-        //while(ClkCfgRegs.SYSPLLSTS.bit.LOCKS != 1)
-        //{
+        while(ClkCfgRegs.SYSPLLSTS.bit.LOCKS != 1)
+        {
             // Uncomment to service the watchdog
             // ServiceDog();
-        //}
+        }
     }
     // Set divider to produce slower output frequency to limit current increase
     if(divsel != PLLCLK_BY_126)
