@@ -37,9 +37,10 @@ classdef serialDataProcess
                             continue;
                         end
                         temp = uint16(serialData(i+4));     %高四位
+                        temp = bitand(temp,uint16(15));     %保留右边4位
                         temp = bitshift(temp, 8);               %低八位
                         temp = temp + uint16(serialData(i+3));
-                        temp = double(temp)/4096*3.3;
+                        temp = double(temp)/4096*3;
                         serialRlDta = [serialRlDta temp];
                     end
                 end

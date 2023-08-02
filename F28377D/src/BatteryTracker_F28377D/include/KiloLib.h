@@ -11,5 +11,6 @@
 void Int2Str(Uint32 IntNum,char* CharNum);
 void ftoa(Uint16 *p,float Val);
 extern Uint16 AdcaIntFlag;
+extern Uint16 AdcaFirtstTime;
 
 #endif /* INCLUDE_KILOLIB_H_ */

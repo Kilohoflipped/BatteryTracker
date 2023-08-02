@@ -16,10 +16,10 @@ void ConfigureEPWM1(void)
     EALLOW;
     // 设置TB周期计数器的值
     // 对于增减计数模式来说：F(EPWM)=PLLSYSCLK/2/TBPRD
-    EPwm1Regs.TBPRD = 1000;                         // 设定EPWM频率为100k=200*1000*1000/2/1000
+    EPwm1Regs.TBPRD = 500;                         // 设定EPWM频率为100k=200*1000*1000/2/500/2 (考虑到预分频)
     // 设置比较寄存器的值
-    EPwm1Regs.CMPA.bit.CMPA = (int)floor(0.5*1000); // 设定A通道占空比
-    EPwm1Regs.CMPB.bit.CMPB = (int)floor(0.5*1000); // 设定B通道占空比
+    EPwm1Regs.CMPA.bit.CMPA = (int)floor(0.5*EPwm1Regs.TBPRD); // 设定A通道占空比
+    EPwm1Regs.CMPB.bit.CMPB = (int)floor(0.5*EPwm1Regs.TBPRD); // 设定B通道占空比
     EPwm1Regs.TBPHS.bit.TBPHS = 0;                  // 将相位寄存器清零
     EPwm1Regs.TBCTR = 0;                            // 将时间基准计数器清零
     // 设置EPWM模块的计数方式
@@ -33,7 +33,7 @@ void ConfigureEPWM1(void)
     EPwm1Regs.AQCTLB.bit.CBU = AQ_CLEAR;            // 清零
     EPwm1Regs.AQCTLB.bit.CBD = AQ_SET;
     // 设定死区发生器
-    EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;  // 设为两边都有死区
+    //EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;  // 设为两边都有死区
     EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HIC;       // 必须这么设置，否则两边都加5%。则失效
     EPwm1Regs.DBRED.bit.DBRED = 2;                  // 死区为10%
     EPwm1Regs.DBFED.bit.DBFED = 2;

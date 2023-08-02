@@ -8,6 +8,11 @@
 #include "PeriDevices.h"
 #include "KiloLib.h"
 extern Uint16 AdcaIntFlag;
+extern Uint16 AdcaFirtstTime;
+
+Uint16 ADCResult0;
+Uint16 ADCLOW8;
+Uint16 ADCHIGH8;
 
 void ConfigureADC(void)
 {
@@ -91,7 +96,18 @@ void SetupADCChannel()
 
 interrupt void ADCA_INT1_ISR(void)
 {
-    AdcaIntFlag = 1;
+    if (AdcaFirtstTime)
+    {
+        SciaMsg("!ADC!");
+        AdcaFirtstTime = 0;
+    }
+    ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 转换结果
+    SciaMsg("AD=");
+    //ADCLOW8 = ADCResult0 & 0xFF;
+    //ADCHIGH8 = (ADCResult0>>8) & 0xFF;
+    SciaXmit(ADCResult0 & 0xFF);
+    SciaXmit((ADCResult0>>8) & 0xFF);
+    //AdcaIntFlag = 1;
     // 清除中断标志
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
