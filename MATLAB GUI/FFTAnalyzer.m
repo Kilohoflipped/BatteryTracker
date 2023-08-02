@@ -1,4 +1,4 @@
-classdef ImpedanceFFTAnalyzer < handle
+classdef FFTAnalyzer < handle
     
     properties
         xData
@@ -8,10 +8,8 @@ classdef ImpedanceFFTAnalyzer < handle
     
     methods
         
-        function obj = ImpedanceFFTAnalyzer(~, ~, ~)
+        function obj = FFTAnalyzer(xData, yData, fs)
             % 构造函数，初始化数据和采样频率
-            obj.yData = [1	2	3	4	1	2	3	4	1	2	3	4];
-            obj.xData = [1	2	3	4	5	6	7	8	9	10	11	12];
             obj.fs = 5;
             obj.analyzeImpedance();
         end

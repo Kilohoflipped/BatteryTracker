@@ -70,7 +70,7 @@ int main(void)
             SciaMsg("AD=");
             SciaXmit(ADCResult0 & 0xFF);
             SciaXmit((ADCResult0>>8) & 0xFF);
-            SciaMsg("!\n");
+            //SciaMsg("!\n");
         }
     }
 }

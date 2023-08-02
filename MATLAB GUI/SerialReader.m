@@ -1,32 +1,31 @@
-classdef SerialReader < handle
+classdef serialReader < handle
+    
     properties
-        adresult = '';
+        serialHelper;
+        serialData
     end
     
     methods
-        function obj = SerialReader
-            s = serial('COM1');  % 请将COM1替换为实际的串口号
-            set(s,'BaudRate',9600);
-            set(s,'DataBits',8);
-            set(s,'StopBits',1);
-            set(s,'Parity','none');
-            set(s,'FlowControl','none');
-            
-            fopen(s);
-            bytesRead = 0;
-            bufferSize = 3000;  % 定义缓冲区大小为3000字节
-            while bytesRead < bufferSize
-                bytesAvailable = s.BytesAvailable;
-                if bytesAvailable > 0
-                    data = fread(s, bytesAvailable, 'uint8');
-                    obj.adresult = [obj.adresult char(data')];
-                    bytesRead = bytesRead + bytesAvailable;
-                end
-            end
-            
-            fclose(s);
-            delete(s);
-            clear s;
+        function obj = serialReader(bufferSize)
+            obj.serialData = obj.recieveData(bufferSize);
+        end
+
+        function serialConnectCreat(obj)
+            obj.serialHelper = serialport("COM11",9600, ...
+                                          "Parity","none", ...
+                                          "DataBits",8, ...
+                                          "StopBits",1);
+        end
+
+        function serialData = recieveData(obj,bufferSize)
+            obj.serialConnectCreat();
+            serialData = read(obj.serialHelper,bufferSize,"uint8");
+            obj.endSerialConnect();
+        end
+
+        function endSerialConnect(obj)
+            flush(obj.serialHelper)
+            delete(obj.serialHelper);
         end
     end
 end
