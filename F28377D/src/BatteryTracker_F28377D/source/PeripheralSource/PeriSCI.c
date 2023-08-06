@@ -18,10 +18,10 @@ void ConfigureSciA(void)
     // GPIO_SetupPinMux() - Sets the GPxMUX1/2 and GPyMUX1/2 register bits
     // GPIO_SetupPinOptions() - Sets the direction and configuration of the GPIOS
 
-    GPIO_SetupPinMux(64, GPIO_MUX_CPU1, 6);             // 初始化64脚的功能为SCI-A模块RX接收引脚
-    GPIO_SetupPinOptions(64, GPIO_INPUT, GPIO_PUSHPULL);
-    GPIO_SetupPinMux(65, GPIO_MUX_CPU1, 6);             // 初始化65脚的功能为SCI-A模块TX发送引脚
-    GPIO_SetupPinOptions(65, GPIO_OUTPUT, GPIO_ASYNC);
+    GPIO_SetupPinMux(28, GPIO_MUX_CPU1, 1);             // 初始化64脚的功能为SCI-A模块RX接收引脚
+    GPIO_SetupPinOptions(28, GPIO_INPUT, GPIO_PUSHPULL);
+    GPIO_SetupPinMux(29, GPIO_MUX_CPU1, 1);             // 初始化65脚的功能为SCI-A模块TX发送引脚
+    GPIO_SetupPinOptions(29, GPIO_OUTPUT, GPIO_ASYNC);
 
     // 注意: 在InitSysCtrl()函数中，SCI-A模块的时钟已经被打开
     SciaRegs.SCICCR.bit.SCICHAR = 7;                    // 通信消息字符长度为8Bit
@@ -45,7 +45,7 @@ void ConfigureSciA(void)
     // 设置SCIA的波特率
     // @LSPCLK = 50 MHz (200 MHz SYSCLK)
     // HBAUD = 0x02 and LBAUD = 0x8B.
-    BaudCalculate(9600,BaudInf);
+    BaudCalculate(115200,BaudInf);
     SciaRegs.SCIHBAUD.bit.BAUD = (int)BaudInf[1];            // 波特率选择器高八位
     SciaRegs.SCILBAUD.bit.BAUD = (int)BaudInf[2];            // 波特率选择器低八位
     //SciaRegs.SCIHBAUD.all = 0x0002;

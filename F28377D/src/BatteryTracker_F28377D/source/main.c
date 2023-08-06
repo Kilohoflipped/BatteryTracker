@@ -70,6 +70,7 @@ int main(void)
             //SciaMsg("!\n");
         }
         */
+        //SciaXmit(21);
     }
 }
 

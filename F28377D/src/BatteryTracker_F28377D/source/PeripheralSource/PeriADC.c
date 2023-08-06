@@ -11,6 +11,7 @@ extern Uint16 AdcaIntFlag;
 extern Uint16 AdcaFirtstTime;
 
 Uint16 ADCResult0;
+Uint16 ADCResult1;
 Uint16 ADCLOW8;
 Uint16 ADCHIGH8;
 
@@ -67,9 +68,17 @@ void SetupADCChannel()
     AdcaRegs.ADCSOC0CTL.bit.CHSEL = 0;              // 设置SOC0的输入信号通道A0
     AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置SOC0的采样窗口大小
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
+//    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
+//    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+//    AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
+
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 1;              // 设置SOC1的输入信号通道A1
+    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps;          // 设置SOC1的采样窗口大小
+    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = 5;            // 设置SOC0的触发源0:仅软件,5:ePWM1,SOC/A
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;            // 使能INT1中断
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0;          // SOC0转换完成后使得INT置位
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 1;          // SOC1转换完成后使得INT置位
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;          // 初始化：清零中断标志位
+
     // ADCB
     AdcbRegs.ADCSOC0CTL.bit.CHSEL = 0;              // 设置SOC0的输入信号通道B0
     AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps;          // 设置SOC0的采样窗口大小
@@ -94,19 +103,35 @@ void SetupADCChannel()
     EDIS;
 }
 
-interrupt void ADCA_INT1_ISR(void)
+interrupt void ADCA_INT1_ISR(void)                  // 在SOC0和SOC1转换完成后通过SCI向串口发送数据
 {
     if (AdcaFirtstTime)
     {
         SciaMsg("!ADC!");
         AdcaFirtstTime = 0;
     }
-    ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 转换结果
-    SciaMsg("AD=");
+    ADCResult0 = AdcaResultRegs.ADCRESULT0;         // 通道0转换结果
+    ADCResult1 = AdcaResultRegs.ADCRESULT1;         // 通道1转换结果
+
+    //数据段开始引导符
+    SciaXmit(255);
+    SciaXmit(240);
+    //SciaMsg("AD");
+    //SciaXmit(210);                                   // 0xD2 表示此次信息发送使用了2个通道
+
     //ADCLOW8 = ADCResult0 & 0xFF;
     //ADCHIGH8 = (ADCResult0>>8) & 0xFF;
+
+    //SciaXmit(192);                                  // 0xC0 表示channel0(好蠢
     SciaXmit(ADCResult0 & 0xFF);
     SciaXmit((ADCResult0>>8) & 0xFF);
+
+    //SciaXmit(193);                                  // 0xC1 表示channel1(好蠢
+    SciaXmit(ADCResult1 & 0xFF);
+    SciaXmit((ADCResult1>>8) & 0xFF);
+
+    //SciaXmit(238);                                  // 0xEE 表示数据发送结束
+
     //AdcaIntFlag = 1;
     // 清除中断标志
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;

@@ -1,25 +1,43 @@
 classdef FFTAnalyzer < handle
     
     properties
-        xData
-        yData
+        vData
+        iData
         fs
+        ts
     end
     
     methods
         
-        function obj = FFTAnalyzer(xData, yData, fs)
+        function obj = FFTAnalyzer(vData, iData, fs)
             % 构造函数，初始化数据和采样频率
-            obj.fs = 5;
-            obj.analyzeImpedance();
+            obj.vData = vData;
+            obj.iData = iData;
+            obj.fs = fs;
+            obj.ts = 1/fs;
+            %obj.analyzeImpedance();
         end
         
+        function [P1V,fv,P1I,fi] = fftAnalis(obj)
+            fftV = fft(obj.vData);
+            LV = length(obj.vData);
+            P2V = abs(fftV/LV);
+            P1V = P2V(1:LV/2+1);
+            P1V(2:end-1) = 2*P1V(2:end-1);
+            fv = obj.fs*(0:(LV/2))/LV;  
+
+            fftI = fft(obj.iData);
+            LI = length(obj.iData);
+            P2I = abs(fftI/LI);
+            P1I = P2I(1:LI/2+1);
+            P1I(2:end-1) = 2*P1I(2:end-1);
+            fi = obj.fs*(0:(LV/2))/LI; 
+        end
+
         function analyzeImpedance(obj)
             % 分析阻抗谱
             
-            % 确定采样频率
-            x = obj.xData - 39.5;
-            y = obj.yData - 376.38;
+            % 确定采样间隔
             dt = 1 / obj.fs;
 
             % 计算FFT
